@@ -17,6 +17,7 @@ func main() {
 	logging.Log.Info("Создан роутинг")
 
 	router.HandleFunc("/createUser", crud.CreateUser).Methods("POST")
+	router.HandleFunc("/deleteUser/{id}", crud.DeleteUserByID).Methods("DELETE")
 	http.ListenAndServe("localhost:8080", router)
 
 	logging.Log.Info("Сервис готов. Открыто соединение для прослушивания запросов")

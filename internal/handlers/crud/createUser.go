@@ -76,9 +76,12 @@ func CreateUser(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, fmt.Sprintf("Неудалось создать пользователя: %v", err), 500)
 		return
 	}
-	logging.Log.Info("Запрос на создание пользователя успешно завершен")
 
 	w.WriteHeader(http.StatusOK)
+
+	json.NewEncoder(w).Encode(map[string]string{"user_id": user.ID.String(), "msg": "Создание пользователя прошло успешно"})
+
+	logging.Log.Info("Запрос на создание пользователя успешно завершен")
 
 	return
 }

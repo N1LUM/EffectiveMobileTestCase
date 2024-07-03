@@ -28,24 +28,31 @@ func ValidateUser(user *models.Users) error {
 	}).Debug("В валидацию пришли следующие данные")
 
 	if err := validateUserName(user); err != nil {
+		logging.Log.Error("Валидация имени пользователя провалилась")
 		return err
 	}
 	if err := validateUserSurname(user); err != nil {
+		logging.Log.Error("Валидация фамилии пользователя провалилась")
 		return err
 	}
 	if err := validateUserPatronymic(user); err != nil {
+		logging.Log.Error("Валидация отчества пользователя провалилась")
 		return err
 	}
 	if err := validateAddress(user); err != nil {
+		logging.Log.Error("Валидация адреса пользователя провалилась")
 		return err
 	}
 	if err := validatePassportSerie(user); err != nil {
+		logging.Log.Error("Валидация серии паспорта пользователя провалилась")
 		return err
 	}
 	if err := validatePassportNumber(user); err != nil {
+		logging.Log.Error("Валидация номера паспорта пользователя провалилась")
 		return err
 	}
 	if err := validateFullPassport(user); err != nil {
+		logging.Log.Error("Валидация полного номера паспорта пользователя провалилась")
 		return err
 	}
 
