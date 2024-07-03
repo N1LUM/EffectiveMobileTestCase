@@ -26,6 +26,8 @@ func main() {
 
 	tasksRouter := router.PathPrefix("/tasks").Subrouter()
 	tasksRouter.HandleFunc("/create", tasks.CreateTask).Methods("POST")
+	tasksRouter.HandleFunc("/start/{id}", tasks.StartTaskTimer).Methods("POST")
+	tasksRouter.HandleFunc("/stop/{id}", tasks.StopTaskTimer).Methods("POST")
 
 	http.ListenAndServe("localhost:8080", router)
 
