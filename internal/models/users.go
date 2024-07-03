@@ -28,3 +28,9 @@ type UserFilter struct {
 type UserFilters struct {
 	Filters []UserFilter `json:"filters"`
 }
+
+type UserGetListInput struct {
+	Filters UserFilters `json:"filters"`
+	Page    int         `json:"page"`
+	Limit   int         `json:"limit"`
+}
