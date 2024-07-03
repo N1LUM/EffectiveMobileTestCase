@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"github.com/gorilla/mux"
+	"github.com/sirupsen/logrus"
 	"net/http"
 	"test/internal/db"
 	"test/internal/logging"
@@ -24,6 +25,19 @@ func GetUserByID(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, fmt.Sprintf("Не удалось получить данные пользователя: %v", err), 400)
 		return
 	}
+
+	logging.Log.WithFields(logrus.Fields{
+		"user_id":             resultUser.ID,
+		"user_name":           resultUser.Name,
+		"user_surname":        resultUser.Surname,
+		"user_patronymic":     resultUser.Patronymic,
+		"user_address":        resultUser.Address,
+		"user_passportSerie":  resultUser.PassportSerie,
+		"user_pussportNumber": resultUser.PassportNumber,
+		"user_fullPassport":   resultUser.FullPassport,
+		"user_createdAt":      resultUser.CreatedAt,
+		"user_updatedAt":      resultUser.UpdatedAt,
+	}).Debug("Получен пользователь со следующими данными")
 
 	w.WriteHeader(http.StatusOK)
 

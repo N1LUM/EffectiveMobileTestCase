@@ -20,6 +20,7 @@ func main() {
 	router.HandleFunc("/deleteUser/{id}", crud.DeleteUserByID).Methods("DELETE")
 	router.HandleFunc("/updateUser/{id}", crud.UpdateUserByID).Methods("POST")
 	router.HandleFunc("/getUser/{id}", crud.GetUserByID).Methods("GET")
+	router.HandleFunc("/getUsers", crud.GetUsers).Methods("GET")
 
 	http.ListenAndServe("localhost:8080", router)
 
