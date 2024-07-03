@@ -11,8 +11,8 @@ import (
 	"unicode/utf8"
 )
 
-func ValidateUser(user *models.Users) error {
-	logging.Log.Info("Начало валидации данных пользователя")
+func ValidateCreateUser(user *models.Users) error {
+	logging.Log.Info("Начало валидации данных на создание пользователя")
 
 	logging.Log.WithFields(logrus.Fields{
 		"user_id":             user.ID,
@@ -53,6 +53,52 @@ func ValidateUser(user *models.Users) error {
 	}
 	if err := validateFullPassport(user); err != nil {
 		logging.Log.Error("Валидация полного номера паспорта пользователя провалилась")
+		return err
+	}
+
+	logging.Log.Info("Валидация пользователя успешно завершена!")
+
+	return nil
+}
+
+func ValidateUpdateUser(user *models.Users) error {
+	logging.Log.Info("Начало валидации данных на обновление пользователя")
+
+	logging.Log.WithFields(logrus.Fields{
+		"user_id":             user.ID,
+		"user_name":           user.Name,
+		"user_surname":        user.Surname,
+		"user_patronymic":     user.Patronymic,
+		"user_address":        user.Address,
+		"user_passportSerie":  user.PassportSerie,
+		"user_pussportNumber": user.PassportNumber,
+		"user_fullPassport":   user.FullPassport,
+		"user_createdAt":      user.CreatedAt,
+		"user_updatedAt":      user.UpdatedAt,
+	}).Debug("В валидацию пришли следующие данные")
+
+	if err := validateUserName(user); err != nil {
+		logging.Log.Error("Валидация имени пользователя провалилась")
+		return err
+	}
+	if err := validateUserSurname(user); err != nil {
+		logging.Log.Error("Валидация фамилии пользователя провалилась")
+		return err
+	}
+	if err := validateUserPatronymic(user); err != nil {
+		logging.Log.Error("Валидация отчества пользователя провалилась")
+		return err
+	}
+	if err := validateAddress(user); err != nil {
+		logging.Log.Error("Валидация адреса пользователя провалилась")
+		return err
+	}
+	if err := validatePassportSerie(user); err != nil {
+		logging.Log.Error("Валидация серии паспорта пользователя провалилась")
+		return err
+	}
+	if err := validatePassportNumber(user); err != nil {
+		logging.Log.Error("Валидация номера паспорта пользователя провалилась")
 		return err
 	}
 
