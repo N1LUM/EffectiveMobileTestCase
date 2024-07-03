@@ -36,6 +36,8 @@ func CreateUser(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	logging.Log.Debugf("Сгенерирован uuid для нового пользователя")
+
 	if err = json.Unmarshal(body, &user); err != nil {
 		logging.Log.WithFields(logrus.Fields{
 			"errors": err,
