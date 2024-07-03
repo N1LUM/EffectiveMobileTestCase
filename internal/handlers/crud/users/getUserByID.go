@@ -1,4 +1,4 @@
-package crud
+package users
 
 import (
 	"encoding/json"
