@@ -18,3 +18,13 @@ type Users struct {
 	UpdatedAt      time.Time `gorm:"autoUpdateTime"`
 	DeletedAt      time.Time
 }
+
+type UserFilter struct {
+	Field    string `json:"field"`
+	Value    string `json:"value"`
+	Operator string `json:"operator"`
+}
+
+type UserFilters struct {
+	Filters []UserFilter `json:"filters"`
+}

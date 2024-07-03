@@ -34,8 +34,8 @@ func UpdateUserByID(w http.ResponseWriter, r *http.Request) {
 	if err = json.Unmarshal(body, &user); err != nil {
 		logging.Log.WithFields(logrus.Fields{
 			"errors": err,
-		}).Error("Не удалось перевести байты тела запроса в структуру Users")
-		http.Error(w, fmt.Sprintf("Не удалось перевести байты тела запроса в структуру Users: %v", err), 400)
+		}).Error("Не удалось декодировать тело запроса в структуру Users")
+		http.Error(w, fmt.Sprintf("Не удалось удалось декодировать тело запроса в структуру Users: %v", err), 400)
 		return
 	}
 
