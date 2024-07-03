@@ -1,9 +1,9 @@
-package crud
+package users
 
 import (
 	"encoding/json"
 	"fmt"
-	"github.com/gorilla/mux"
+	"github.com/google/uuid"
 	"github.com/sirupsen/logrus"
 	"io"
 	"net/http"
@@ -13,13 +13,8 @@ import (
 	"test/internal/validation"
 )
 
-func UpdateUserByID(w http.ResponseWriter, r *http.Request) {
-	logging.Log.Info("Запрос на обновление данных пользователя")
-
-	vars := mux.Vars(r)
-	id := vars["id"]
-
-	logging.Log.Debugf("ID пользователя на обновление данных %v", id)
+func CreateUser(w http.ResponseWriter, r *http.Request) {
+	logging.Log.Info("Запрос на создание пользователя")
 
 	body, err := io.ReadAll(r.Body)
 	if err != nil {
@@ -31,17 +26,29 @@ func UpdateUserByID(w http.ResponseWriter, r *http.Request) {
 	}
 
 	var user models.Users
+
+	user.ID, err = uuid.NewUUID()
+	if err != nil {
+		logging.Log.WithFields(logrus.Fields{
+			"errors": err,
+		}).Error("Не удалось сгенерировать uuid для нового пользователя")
+		http.Error(w, fmt.Sprintf("Не удалось сгенерировать uuid для нового пользователя: %v", err), 500)
+		return
+	}
+
+	logging.Log.Debugf("Сгенерирован uuid для нового пользователя - %v", user.ID)
+
 	if err = json.Unmarshal(body, &user); err != nil {
 		logging.Log.WithFields(logrus.Fields{
 			"errors": err,
 		}).Error("Не удалось декодировать тело запроса в структуру Users")
-		http.Error(w, fmt.Sprintf("Не удалось удалось декодировать тело запроса в структуру Users: %v", err), 400)
+		http.Error(w, fmt.Sprintf("Не удалось декодировать тело запроса в структуру Users: %v", err), 400)
 		return
 	}
 
 	user.FullPassport = user.PassportSerie + user.PassportNumber
 
-	if err = validation.ValidateUpdateUser(&user); err != nil {
+	if err = validation.ValidateCreateUser(&user); err != nil {
 		logging.Log.WithFields(logrus.Fields{
 			"errors": err,
 		}).Error("Данные пользователя не прошли валидацию")
@@ -60,19 +67,21 @@ func UpdateUserByID(w http.ResponseWriter, r *http.Request) {
 		"user_fullPassport":   user.FullPassport,
 		"user_createdAt":      user.CreatedAt,
 		"user_updatedAt":      user.UpdatedAt,
-	}).Debugf("Данные для обновления записи пользователя с ID: %v", id)
+	}).Debug("Данные для создания записи пользователя")
 
-	if err = db.PostgresClient.Where("ID = ?", id).Updates(user).Error; err != nil {
-		logging.Log.Errorf("Не удалось обновить данные пользователя %v", err)
-		http.Error(w, fmt.Sprintf("Не удалось обновить данные пользователя: %v", err), 400)
+	if err = db.PostgresClient.Create(&user).Error; err != nil {
+		logging.Log.WithFields(logrus.Fields{
+			"errors": err,
+		}).Error("Неудалось создать пользователя")
+		http.Error(w, fmt.Sprintf("Неудалось создать пользователя: %v", err), 500)
 		return
 	}
 
 	w.WriteHeader(http.StatusOK)
 
-	json.NewEncoder(w).Encode(map[string]string{"user_id": id, "msg": "Обновление данных пользователя прошло успешно"})
+	json.NewEncoder(w).Encode(map[string]string{"user_id": user.ID.String(), "msg": "Создание пользователя прошло успешно"})
 
-	logging.Log.Info("Запрос на обновление данных пользователя успешно завершен")
+	logging.Log.Info("Запрос на создание пользователя успешно завершен")
 
 	return
 }

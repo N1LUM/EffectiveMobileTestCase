@@ -4,7 +4,8 @@ import (
 	"github.com/gorilla/mux"
 	"net/http"
 	"test/internal/db"
-	"test/internal/handlers/crud"
+	"test/internal/handlers/crud/tasks"
+	"test/internal/handlers/crud/users"
 	"test/internal/logging"
 )
 
@@ -16,11 +17,15 @@ func main() {
 
 	logging.Log.Info("Создан роутинг")
 
-	router.HandleFunc("/createUser", crud.CreateUser).Methods("POST")
-	router.HandleFunc("/deleteUser/{id}", crud.DeleteUserByID).Methods("DELETE")
-	router.HandleFunc("/updateUser/{id}", crud.UpdateUserByID).Methods("POST")
-	router.HandleFunc("/getUser/{id}", crud.GetUserByID).Methods("GET")
-	router.HandleFunc("/getUsers", crud.GetUsers).Methods("GET")
+	usersRouter := router.PathPrefix("/users").Subrouter()
+	usersRouter.HandleFunc("/create", users.CreateUser).Methods("POST")
+	usersRouter.HandleFunc("/delete/{id}", users.DeleteUserByID).Methods("DELETE")
+	usersRouter.HandleFunc("/update/{id}", users.UpdateUserByID).Methods("POST")
+	usersRouter.HandleFunc("/get/{id}", users.GetUserByID).Methods("GET")
+	usersRouter.HandleFunc("/list", users.GetUsers).Methods("GET")
+
+	tasksRouter := router.PathPrefix("/tasks").Subrouter()
+	tasksRouter.HandleFunc("/create", tasks.CreateTask).Methods("POST")
 
 	http.ListenAndServe("localhost:8080", router)
 
