@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"github.com/google/uuid"
+	"github.com/gorilla/mux"
 	"github.com/sirupsen/logrus"
 	"io"
 	"net/http"
@@ -14,6 +15,18 @@ import (
 
 func CreateTask(w http.ResponseWriter, r *http.Request) {
 	logging.Log.Info("Запрос на создание задания")
+
+	vars := mux.Vars(r)
+	user_id, err := uuid.Parse(vars["user_id"])
+	if err != nil {
+		logging.Log.WithFields(logrus.Fields{
+			"errors": err,
+		}).Error("Не удалось перевести ID пользователя с UUID в String")
+		http.Error(w, fmt.Sprintf("Не удалось перевести ID пользователя с UUID в String: %v", err), 400)
+		return
+	}
+
+	logging.Log.Debugf("Задача будет создана для пользователя с ID - %v", user_id)
 
 	body, err := io.ReadAll(r.Body)
 	if err != nil {
@@ -63,6 +76,27 @@ func CreateTask(w http.ResponseWriter, r *http.Request) {
 			"errors": err,
 		}).Error("Неудалось создать задание")
 		http.Error(w, fmt.Sprintf("Неудалось создать задание: %v", err), 500)
+		return
+	}
+
+	user_tasks := models.UsersTasks{
+		TaskID: task.ID,
+		UserID: user_id,
+	}
+	user_tasks.ID, err = uuid.NewUUID()
+	if err != nil {
+		logging.Log.WithFields(logrus.Fields{
+			"errors": err,
+		}).Error("Не удалось сгенерировать uuid для записи связи пользователя и задания")
+		http.Error(w, fmt.Sprintf("Не удалось сгенерировать uuid для записи связи пользователя и задания: %v", err), 500)
+		return
+	}
+
+	if err = db.PostgresClient.Create(&user_tasks).Error; err != nil {
+		logging.Log.WithFields(logrus.Fields{
+			"errors": err,
+		}).Error("Неудалось создать связь между пользователем и заданием")
+		http.Error(w, fmt.Sprintf("Неудалось создать связь между пользователем и заданием: %v", err), 500)
 		return
 	}
 
