@@ -23,9 +23,10 @@ func main() {
 	usersRouter.HandleFunc("/update/{id}", users.UpdateUserByID).Methods("POST")
 	usersRouter.HandleFunc("/get/{id}", users.GetUserByID).Methods("GET")
 	usersRouter.HandleFunc("/list", users.GetUsers).Methods("GET")
+	usersRouter.HandleFunc("/laborCost/{user_id}", users.LaborCost).Methods("GET")
 
 	tasksRouter := router.PathPrefix("/tasks").Subrouter()
-	tasksRouter.HandleFunc("/create", tasks.CreateTask).Methods("POST")
+	tasksRouter.HandleFunc("/create/{user_id}", tasks.CreateTask).Methods("POST")
 	tasksRouter.HandleFunc("/start/{id}", tasks.StartTaskTimer).Methods("POST")
 	tasksRouter.HandleFunc("/stop/{id}", tasks.StopTaskTimer).Methods("POST")
 
