@@ -4,7 +4,7 @@ import (
 	"github.com/gorilla/mux"
 	httpSwagger "github.com/swaggo/http-swagger"
 	"net/http"
-
+	_ "test/docs"
 	"test/internal/db"
 	"test/internal/handlers/crud/tasks"
 	"test/internal/handlers/crud/users"
