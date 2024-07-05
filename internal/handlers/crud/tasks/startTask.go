@@ -12,6 +12,18 @@ import (
 	"time"
 )
 
+// StartTaskTimer godoc
+// @Summary      Start a task timer
+// @Description  Start the timer for a specific task.
+// @Tags         tasks
+// @Accept       json
+// @Produce      json
+// @Param        id path string true "Task ID"
+// @Success      200  {object}  models.Tasks
+// @Failure      400  {object}  map[string]string{"error": "Error message"}
+// @Failure      404  {object}  map[string]string{"error": "Error message"}
+// @Failure      500  {object}  map[string]string{"error": "Error message"}
+// @Router       /tasks/{id}/start [post]
 func StartTaskTimer(w http.ResponseWriter, r *http.Request) {
 	logging.Log.Info("Запрос на старт задачи")
 

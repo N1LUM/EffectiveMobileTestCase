@@ -10,6 +10,15 @@ import (
 	"test/internal/models"
 )
 
+// DeleteUserByID godoc
+// @Summary      Delete a user by ID
+// @Description  Delete a user by ID
+// @Tags         users
+// @Param        id   path      string  true  "User ID"
+// @Produce      json
+// @Success      200  {object}  map[string]string{"user_id": "ID of the deleted user", "msg": "Success message"}
+// @Failure      400  {object}  map[string]string{"error": "Error message"}
+// @Router       /users/delete/{id} [delete]
 func DeleteUserByID(w http.ResponseWriter, r *http.Request) {
 	logging.Log.Info("Запрос на удаление пользователя по ID")
 

@@ -13,6 +13,32 @@ import (
 	"test/internal/models"
 )
 
+// CreateTask создает новое задание для указанного пользователя.
+//
+// Swagger: operationId=createTask
+// responses:
+//   '200':
+//     description: Успешное создание задания.
+//     schema:
+//       type: object
+//       properties:
+//         task_id:
+//           type: string
+//           example: "550e8400-e29b-41d4-a716-446655440000"
+//         msg:
+//           type: string
+//           example: "Создание задания прошло успешно"
+//   '400':
+//     description: Ошибка в запросе, например, неверный формат UUID пользователя.
+//   '500':
+//     description: Внутренняя ошибка сервера при создании задания или связи пользователя и задания.
+//     schema:
+//       type: object
+//       properties:
+//         error:
+//           type: string
+//           example: "Не удалось создать задание: ошибка текст"
+
 func CreateTask(w http.ResponseWriter, r *http.Request) {
 	logging.Log.Info("Запрос на создание задания")
 

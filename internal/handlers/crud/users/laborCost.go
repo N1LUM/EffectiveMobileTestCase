@@ -41,6 +41,17 @@ func (a ByDuration) Less(i, j int) bool {
 	return a[i].Seconds > a[j].Seconds
 }
 
+// LaborCost godoc
+// @Summary      Calculate labor costs for a user within a specified period
+// @Description  Calculate labor costs for a user within a specified period based on assigned tasks.
+// @Tags         users
+// @Accept       json
+// @Produce      json
+// @Param        user_id path string true "User ID"
+// @Param        body body Period true "Period to calculate (start and end time)"
+// @Success      200  {array}  TaskResponse
+// @Failure      400  {object}  map[string]string{"error": "Error message"}
+// @Router       /users/laborCost/{user_id} [get]
 func LaborCost(w http.ResponseWriter, r *http.Request) {
 	logging.Log.Info("Запрос на получение трудозатрат пользователя")
 

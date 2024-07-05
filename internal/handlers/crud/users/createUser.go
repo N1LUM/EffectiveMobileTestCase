@@ -13,6 +13,17 @@ import (
 	"test/internal/validation"
 )
 
+// CreateUser godoc
+// @Summary      Create a user
+// @Description  Create a new user
+// @Tags         users
+// @Accept       json
+// @Produce      json
+// @Param        user  body  models.Users  true  "Create User"
+// @Success      200   {object}  map[string]string{"user_id": "UUID of the created user", "msg": "Success message"}
+// @Failure      400   {object}  map[string]string{"error": "Error message"}
+// @Failure      500   {object}  map[string]string{"error": "Error message"}
+// @Router       /users/create [post]
 func CreateUser(w http.ResponseWriter, r *http.Request) {
 	logging.Log.Info("Запрос на создание пользователя")
 

@@ -12,6 +12,16 @@ import (
 	"test/internal/models"
 )
 
+// GetUsers godoc
+// @Summary      Get a list of users with optional filtering
+// @Description  Get a list of users with optional filtering. Supports pagination.
+// @Tags         users
+// @Accept       json
+// @Produce      json
+// @Param        filters body models.UserGetListInput true "Filters to apply"
+// @Success      200  {array}  models.Users
+// @Failure      400  {object}  map[string]string{"error": "Error message"}
+// @Router       /users/list [get]
 func GetUsers(w http.ResponseWriter, r *http.Request) {
 	logging.Log.Info("Запрос на получение списка пользователей")
 

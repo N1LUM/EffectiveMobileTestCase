@@ -11,6 +11,15 @@ import (
 	"test/internal/models"
 )
 
+// GetUserByID godoc
+// @Summary      Get a user by ID
+// @Description  Get a user by ID
+// @Tags         users
+// @Param        id   path      string  true  "User ID"
+// @Produce      json
+// @Success      200  {object}  models.Users
+// @Failure      400  {object}  map[string]string{"error": "Error message"}
+// @Router       /users/get/{id} [get]
 func GetUserByID(w http.ResponseWriter, r *http.Request) {
 	logging.Log.Info("Запрос на получение пользователя по ID")
 

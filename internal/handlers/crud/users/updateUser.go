@@ -13,6 +13,17 @@ import (
 	"test/internal/validation"
 )
 
+// UpdateUserByID godoc
+// @Summary      Update user data by ID
+// @Description  Update user data specified by the user ID.
+// @Tags         users
+// @Accept       json
+// @Produce      json
+// @Param        id path string true "User ID"
+// @Param        body body models.Users true "User object to update"
+// @Success      200  {object}  map[string]string
+// @Failure      400  {object}  map[string]string{"error": "Error message"}
+// @Router       /users/{id} [put]
 func UpdateUserByID(w http.ResponseWriter, r *http.Request) {
 	logging.Log.Info("Запрос на обновление данных пользователя")
 
