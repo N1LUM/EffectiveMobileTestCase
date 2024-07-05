@@ -12,16 +12,97 @@ import (
 	"test/internal/models"
 )
 
-// GetUsers godoc
-// @Summary      Get a list of users with optional filtering
-// @Description  Get a list of users with optional filtering. Supports pagination.
-// @Tags         users
-// @Accept       json
-// @Produce      json
-// @Param        filters body models.UserGetListInput true "Filters to apply"
-// @Success      200  {array}  models.Users
-// @Failure      400  {object}  map[string]string{"error": "Error message"}
-// @Router       /users/list [get]
+// GetUsers получает список пользователей с возможностью фильтрации и пагинации.
+//
+// Swagger: operationId=getUsers
+// parameters:
+//   - name: body
+//     in: body
+//     description: Параметры фильтрации пользователей.
+//     required: false
+//     schema:
+//     "$ref": "#/definitions/UserGetListInput"
+//
+// responses:
+//
+//	'200':
+//	  description: Успешное получение списка пользователей.
+//	  schema:
+//	    type: array
+//	    items:
+//	      "$ref": "#/definitions/User"
+//	'400':
+//	  description: Ошибка в запросе, например, неверный формат параметров фильтрации или ошибка получения данных.
+//	  schema:
+//	    type: object
+//	    properties:
+//	      error:
+//	        type: string
+//	        example: "Не удалось получить список пользователей: текст ошибки"
+//
+// definitions:
+//
+//	User:
+//	  type: object
+//	  properties:
+//	    ID:
+//	      type: string
+//	      example: "550e8400-e29b-41d4-a716-446655440000"
+//	    Name:
+//	      type: string
+//	      example: "Иван"
+//	    Surname:
+//	      type: string
+//	      example: "Иванов"
+//	    Patronymic:
+//	      type: string
+//	      example: "Иванович"
+//	    Address:
+//	      type: string
+//	      example: "г. Москва, ул. Пушкина, д. Колотушкина"
+//	    PassportSerie:
+//	      type: string
+//	      example: "1234"
+//	    PassportNumber:
+//	      type: string
+//	      example: "567890"
+//	    FullPassport:
+//	      type: string
+//	      example: "1234567890"
+//	    CreatedAt:
+//	      type: string
+//	      format: date-time
+//	      example: "2024-07-05T12:00:00Z"
+//	    UpdatedAt:
+//	      type: string
+//	      format: date-time
+//	      example: "2024-07-05T12:30:00Z"
+//	UserGetListInput:
+//	  type: object
+//	  properties:
+//	    Page:
+//	      type: integer
+//	      example: 1
+//	    Limit:
+//	      type: integer
+//	      example: 10
+//	    Filters:
+//	      type: object
+//	      properties:
+//	        Filters:
+//	          type: array
+//	          items:
+//	            type: object
+//	            properties:
+//	              Field:
+//	                type: string
+//	                example: "Name"
+//	              Value:
+//	                type: string
+//	                example: "Иван"
+//	              Operator:
+//	                type: string
+//	                example: "equals"
 func GetUsers(w http.ResponseWriter, r *http.Request) {
 	logging.Log.Info("Запрос на получение списка пользователей")
 

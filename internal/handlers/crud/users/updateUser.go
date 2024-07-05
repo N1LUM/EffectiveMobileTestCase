@@ -13,17 +13,77 @@ import (
 	"test/internal/validation"
 )
 
-// UpdateUserByID godoc
-// @Summary      Update user data by ID
-// @Description  Update user data specified by the user ID.
-// @Tags         users
-// @Accept       json
-// @Produce      json
-// @Param        id path string true "User ID"
-// @Param        body body models.Users true "User object to update"
-// @Success      200  {object}  map[string]string
-// @Failure      400  {object}  map[string]string{"error": "Error message"}
-// @Router       /users/{id} [put]
+// UpdateUserByID обновляет данные пользователя по его ID.
+//
+// Swagger: operationId=updateUserById
+// parameters:
+//   - name: id
+//     in: path
+//     description: ID пользователя, чьи данные требуется обновить.
+//     required: true
+//     schema:
+//     type: string
+//     example: "550e8400-e29b-41d4-a716-446655440000"
+//   - name: body
+//     in: body
+//     description: Новые данные пользователя для обновления.
+//     required: true
+//     schema:
+//     "$ref": "#/definitions/UserUpdateInput"
+//
+// responses:
+//
+//	'200':
+//	  description: Успешное обновление данных пользователя.
+//	  schema:
+//	    type: object
+//	    properties:
+//	      user_id:
+//	        type: string
+//	        example: "550e8400-e29b-41d4-a716-446655440000"
+//	      msg:
+//	        type: string
+//	        example: "Обновление данных пользователя прошло успешно"
+//	'400':
+//	  description: Ошибка в запросе, например, неверный формат параметров или ошибка при обновлении данных.
+//	  schema:
+//	    type: object
+//	    properties:
+//	      error:
+//	        type: string
+//	        example: "Не удалось обновить данные пользователя: текст ошибки"
+//
+// definitions:
+//
+//	UserUpdateInput:
+//	  type: object
+//	  properties:
+//	    Name:
+//	      type: string
+//	      example: "Иван"
+//	    Surname:
+//	      type: string
+//	      example: "Иванов"
+//	    Patronymic:
+//	      type: string
+//	      example: "Иванович"
+//	    Address:
+//	      type: string
+//	      example: "г. Москва, ул. Пушкина, д. Колотушкина"
+//	    PassportSerie:
+//	      type: string
+//	      example: "1234"
+//	    PassportNumber:
+//	      type: string
+//	      example: "567890"
+//	    CreatedAt:
+//	      type: string
+//	      format: date-time
+//	      example: "2024-07-01T10:00:00Z"
+//	    UpdatedAt:
+//	      type: string
+//	      format: date-time
+//	      example: "2024-07-05T15:30:00Z"
 func UpdateUserByID(w http.ResponseWriter, r *http.Request) {
 	logging.Log.Info("Запрос на обновление данных пользователя")
 

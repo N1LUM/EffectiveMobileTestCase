@@ -41,17 +41,72 @@ func (a ByDuration) Less(i, j int) bool {
 	return a[i].Seconds > a[j].Seconds
 }
 
-// LaborCost godoc
-// @Summary      Calculate labor costs for a user within a specified period
-// @Description  Calculate labor costs for a user within a specified period based on assigned tasks.
-// @Tags         users
-// @Accept       json
-// @Produce      json
-// @Param        user_id path string true "User ID"
-// @Param        body body Period true "Period to calculate (start and end time)"
-// @Success      200  {array}  TaskResponse
-// @Failure      400  {object}  map[string]string{"error": "Error message"}
-// @Router       /users/laborCost/{user_id} [get]
+// LaborCost рассчитывает трудозатраты пользователя на основе задач, выполненных в указанный период.
+//
+// Swagger: operationId=laborCost
+// parameters:
+//   - name: user_id
+//     in: path
+//     description: ID пользователя, для которого нужно рассчитать трудозатраты.
+//     required: true
+//     schema:
+//     type: string
+//     example: "550e8400-e29b-41d4-a716-446655440000"
+//   - name: body
+//     in: body
+//     description: Период времени, за который нужно рассчитать трудозатраты.
+//     required: true
+//     schema:
+//     "$ref": "#/definitions/Period"
+//
+// responses:
+//
+//	'200':
+//	  description: Успешное получение трудозатрат пользователя.
+//	  schema:
+//	    type: array
+//	    items:
+//	      "$ref": "#/definitions/TaskResponse"
+//	'400':
+//	  description: Ошибка в запросе, например, неверный формат параметров или ошибка при получении данных.
+//	  schema:
+//	    type: object
+//	    properties:
+//	      error:
+//	        type: string
+//	        example: "Не удалось получить трудозатраты пользователя: текст ошибки"
+//
+// definitions:
+//
+//	Period:
+//	  type: object
+//	  properties:
+//	    StartTime:
+//	      type: string
+//	      format: date-time
+//	      example: "2024-07-01T00:00:00Z"
+//	    EndTime:
+//	      type: string
+//	      format: date-time
+//	      example: "2024-07-31T23:59:59Z"
+//	TaskResponse:
+//	  type: object
+//	  properties:
+//	    TaskID:
+//	      type: string
+//	      example: "550e8400-e29b-41d4-a716-446655440001"
+//	    Name:
+//	      type: string
+//	      example: "Разработка функционала"
+//	    Hours:
+//	      type: integer
+//	      example: 10
+//	    Minutes:
+//	      type: integer
+//	      example: 30
+//	    Seconds:
+//	      type: integer
+//	      example: 0
 func LaborCost(w http.ResponseWriter, r *http.Request) {
 	logging.Log.Info("Запрос на получение трудозатрат пользователя")
 

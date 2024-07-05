@@ -10,15 +10,36 @@ import (
 	"test/internal/models"
 )
 
-// DeleteUserByID godoc
-// @Summary      Delete a user by ID
-// @Description  Delete a user by ID
-// @Tags         users
-// @Param        id   path      string  true  "User ID"
-// @Produce      json
-// @Success      200  {object}  map[string]string{"user_id": "ID of the deleted user", "msg": "Success message"}
-// @Failure      400  {object}  map[string]string{"error": "Error message"}
-// @Router       /users/delete/{id} [delete]
+// DeleteUserByID удаляет пользователя по его ID.
+//
+// Swagger: operationId=deleteUserByID
+// parameters:
+// - name: id
+//   in: path
+//   description: ID пользователя для удаления.
+//   required: true
+//   type: string
+// responses:
+//   '200':
+//     description: Успешное удаление пользователя.
+//     schema:
+//       type: object
+//       properties:
+//         user_id:
+//           type: string
+//           example: "550e8400-e29b-41d4-a716-446655440000"
+//         msg:
+//           type: string
+//           example: "Удаление пользователя прошло успешно"
+//   '400':
+//     description: Ошибка в запросе, например, неверный формат ID пользователя или ошибка удаления.
+//     schema:
+//       type: object
+//       properties:
+//         error:
+//           type: string
+//           example: "Не удалось удалить пользователя: текст ошибки"
+
 func DeleteUserByID(w http.ResponseWriter, r *http.Request) {
 	logging.Log.Info("Запрос на удаление пользователя по ID")
 
