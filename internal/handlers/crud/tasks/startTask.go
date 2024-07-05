@@ -12,18 +12,66 @@ import (
 	"time"
 )
 
-// StartTaskTimer godoc
-// @Summary      Start a task timer
-// @Description  Start the timer for a specific task.
-// @Tags         tasks
-// @Accept       json
-// @Produce      json
-// @Param        id path string true "Task ID"
-// @Success      200  {object}  models.Tasks
-// @Failure      400  {object}  map[string]string{"error": "Error message"}
-// @Failure      404  {object}  map[string]string{"error": "Error message"}
-// @Failure      500  {object}  map[string]string{"error": "Error message"}
-// @Router       /tasks/{id}/start [post]
+// StartTaskTimer запускает таймер для указанной задачи.
+//
+// Swagger: operationId=startTaskTimer
+// parameters:
+// - name: id
+//   in: path
+//   description: ID задачи для запуска таймера.
+//   required: true
+//   type: string
+// responses:
+//   '200':
+//     description: Успешный запуск таймера для задачи.
+//     schema:
+//       type: object
+//       properties:
+//         ID:
+//           type: string
+//           example: "550e8400-e29b-41d4-a716-446655440000"
+//         Name:
+//           type: string
+//           example: "Название задачи"
+//         Description:
+//           type: string
+//           example: "Описание задачи"
+//         Status:
+//           type: boolean
+//           example: true
+//         Hours:
+//           type: integer
+//           example: 0
+//         Minutes:
+//           type: integer
+//           example: 0
+//         Seconds:
+//           type: integer
+//           example: 0
+//         StartTime:
+//           type: string
+//           format: date-time
+//           example: "2024-07-05T12:00:00Z"
+//         EndTime:
+//           type: string
+//           format: date-time
+//         CreatedAt:
+//           type: string
+//           format: date-time
+//         UpdatedAt:
+//           type: string
+//           format: date-time
+//   '404':
+//     description: Задача с указанным ID не найдена.
+//   '500':
+//     description: Внутренняя ошибка сервера при обновлении задачи.
+//     schema:
+//       type: object
+//       properties:
+//         error:
+//           type: string
+//           example: "Ошибка при обновлении задачи: текст ошибки"
+
 func StartTaskTimer(w http.ResponseWriter, r *http.Request) {
 	logging.Log.Info("Запрос на старт задачи")
 

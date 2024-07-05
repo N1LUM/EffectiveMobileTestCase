@@ -12,6 +12,65 @@ import (
 	"time"
 )
 
+// StopTaskTimer останавливает таймер для указанной задачи.
+//
+// Swagger: operationId=stopTaskTimer
+// parameters:
+// - name: id
+//   in: path
+//   description: ID задачи для остановки таймера.
+//   required: true
+//   type: string
+// responses:
+//   '200':
+//     description: Успешная остановка таймера для задачи.
+//     schema:
+//       type: object
+//       properties:
+//         ID:
+//           type: string
+//           example: "550e8400-e29b-41d4-a716-446655440000"
+//         Name:
+//           type: string
+//           example: "Название задачи"
+//         Description:
+//           type: string
+//           example: "Описание задачи"
+//         Status:
+//           type: boolean
+//           example: false
+//         Hours:
+//           type: integer
+//           example: 0
+//         Minutes:
+//           type: integer
+//           example: 0
+//         Seconds:
+//           type: integer
+//           example: 0
+//         StartTime:
+//           type: string
+//           format: date-time
+//         EndTime:
+//           type: string
+//           format: date-time
+//         CreatedAt:
+//           type: string
+//           format: date-time
+//         UpdatedAt:
+//           type: string
+//           format: date-time
+//   '404':
+//     description: Задача с указанным ID не найдена.
+//   '500':
+//     description: Внутренняя ошибка сервера при обновлении задачи.
+//     schema:
+//       type: object
+//       properties:
+//         error:
+//           type: string
+//           example: "Ошибка при обновлении задачи: текст ошибки"
+
 func StopTaskTimer(w http.ResponseWriter, r *http.Request) {
 	logging.Log.Info("Запрос на остановку задачи")
 
