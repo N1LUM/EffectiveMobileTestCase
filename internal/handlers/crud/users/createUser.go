@@ -13,32 +13,6 @@ import (
 	"test/internal/validation"
 )
 
-// CreateUser создает нового пользователя.
-//
-// Swagger: operationId=createUser
-// responses:
-//   '200':
-//     description: Успешное создание пользователя.
-//     schema:
-//       type: object
-//       properties:
-//         user_id:
-//           type: string
-//           example: "550e8400-e29b-41d4-a716-446655440000"
-//         msg:
-//           type: string
-//           example: "Создание пользователя прошло успешно"
-//   '400':
-//     description: Ошибка в запросе, например, неверный формат данных пользователя или ошибка валидации.
-//   '500':
-//     description: Внутренняя ошибка сервера при создании пользователя.
-//     schema:
-//       type: object
-//       properties:
-//         error:
-//           type: string
-//           example: "Не удалось создать пользователя: текст ошибки"
-
 func CreateUser(w http.ResponseWriter, r *http.Request) {
 	logging.Log.Info("Запрос на создание пользователя")
 

@@ -1,4 +1,519 @@
+swagger: '2.0'
 info:
-  contact: {}
-paths: {}
-swagger: "2.0"
+  description: "API для управления пользователями и задачами"
+  version: "1.0.0"
+  title: "Task Management API"
+host: "localhost:8080"
+basePath: "/"
+tags:
+  - name: "users"
+    description: "Управление пользователями"
+  - name: "tasks"
+    description: "Управление задачами"
+schemes:
+  - "http"
+paths:
+  /tasks/create/{user_id}:
+    post:
+      summary: Создание нового задания
+      description: Создает новое задание для пользователя с указанным ID.
+      operationId: createTask
+      parameters:
+        - name: user_id
+          in: path
+          description: ID пользователя, для которого создается задание.
+          required: true
+          type: string
+          format: uuid
+        - name: body
+          in: body
+          description: Данные нового задания.
+          required: true
+          schema:
+            $ref: "#/definitions/TasksCreateInput"
+      responses:
+        '200':
+          description: Успешное создание задания.
+          schema:
+            $ref: "#/definitions/TaskResponse"
+        '400':
+          description: Ошибка в запросе, например, неверный формат параметров или ошибка при декодировании данных.
+          schema:
+            type: object
+            properties:
+              error:
+                type: string
+                example: "Не удалось декодировать тело запроса в структуру Tasks: текст ошибки"
+        '500':
+          description: Внутренняя ошибка сервера, например, ошибка при создании задания или связи между пользователем и заданием.
+          schema:
+            type: object
+            properties:
+              error:
+                type: string
+                example: "Неудалось создать задание: текст ошибки"
+
+  /tasks/start/{id}:
+    post:
+      summary: Старт таймера задачи
+      description: Запускает таймер для задачи с указанным ID.
+      operationId: startTaskTimer
+      parameters:
+        - name: id
+          in: path
+          description: ID задачи для запуска таймера.
+          required: true
+          type: string
+          format: uuid
+      responses:
+        '200':
+          description: Успешный запуск таймера задачи.
+          schema:
+            $ref: "#/definitions/Tasks"
+        '404':
+          description: Задача не найдена.
+          schema:
+            type: object
+            properties:
+              error:
+                type: string
+                example: "Задача не найдена"
+        '500':
+          description: Ошибка при обновлении задачи.
+          schema:
+            type: object
+            properties:
+              error:
+                type: string
+                example: "Ошибка при обновлении задачи: текст ошибки"
+
+  /tasks/stop/{id}:
+    post:
+      summary: Остановка таймера задачи
+      description: Останавливает таймер для задачи с указанным ID.
+      operationId: stopTaskTimer
+      parameters:
+        - name: id
+          in: path
+          description: ID задачи для остановки таймера.
+          required: true
+          type: string
+          format: uuid
+      responses:
+        '200':
+          description: Успешная остановка таймера задачи.
+          schema:
+            $ref: "#/definitions/Tasks"
+        '404':
+          description: Задача не найдена.
+          schema:
+            type: object
+            properties:
+              error:
+                type: string
+                example: "Задача не найдена"
+        '500':
+          description: Ошибка при обновлении задачи.
+          schema:
+            type: object
+            properties:
+              error:
+                type: string
+                example: "Ошибка при обновлении задачи: текст ошибки"
+
+  /users/create:
+    post:
+      summary: Создание нового пользователя
+      description: Создает нового пользователя с указанными данными.
+      operationId: createUser
+      parameters:
+        - in: body
+          name: body
+          description: Данные нового пользователя.
+          required: true
+          schema:
+            $ref: "#/definitions/Users"
+      responses:
+        '200':
+          description: Успешное создание пользователя.
+          schema:
+            type: object
+            properties:
+              user_id:
+                type: string
+                format: uuid
+                example: "550e8400-e29b-41d4-a716-446655440000"
+              msg:
+                type: string
+                example: "Создание пользователя прошло успешно"
+        '400':
+          description: Ошибка в запросе, например, неверный формат параметров или ошибка при декодировании данных.
+          schema:
+            type: object
+            properties:
+              error:
+                type: string
+                example: "Не удалось прочитать тело запроса: текст ошибки"
+        '500':
+          description: Внутренняя ошибка сервера, например, ошибка при создании пользователя.
+          schema:
+            type: object
+            properties:
+              error:
+                type: string
+                example: "Не удалось создать пользователя: текст ошибки"
+
+  /users/delete/{id}:
+    delete:
+      summary: Удаление пользователя по ID
+      description: Удаляет пользователя с указанным ID.
+      operationId: deleteUserById
+      parameters:
+        - name: id
+          in: path
+          description: ID пользователя для удаления.
+          required: true
+          type: string
+          format: uuid
+      responses:
+        '200':
+          description: Успешное удаление пользователя.
+          schema:
+            type: object
+            properties:
+              user_id:
+                type: string
+                format: uuid
+                example: "550e8400-e29b-41d4-a716-446655440000"
+              msg:
+                type: string
+                example: "Удаление пользователя прошло успешно"
+        '400':
+          description: Ошибка в запросе, например, неверный формат параметров или ошибка при удалении пользователя.
+          schema:
+            type: object
+            properties:
+              error:
+                type: string
+                example: "Не удалось удалить пользователя: текст ошибки"
+        '500':
+          description: Внутренняя ошибка сервера, например, ошибка при обработке запроса.
+          schema:
+            type: object
+            properties:
+              error:
+                type: string
+                example: "Внутренняя ошибка сервера: текст ошибки"
+
+  /users/get/{id}:
+    get:
+      summary: Получение пользователя по ID
+      description: Получает данные пользователя по указанному ID.
+      operationId: getUserByID
+      parameters:
+        - name: id
+          in: path
+          description: ID пользователя для получения данных.
+          required: true
+          type: string
+          format: uuid
+      responses:
+        '200':
+          description: Успешное получение данных пользователя.
+          schema:
+            type: object
+            properties:
+              ID:
+                type: string
+                format: uuid
+                example: "550e8400-e29b-41d4-a716-446655440000"
+              Name:
+                type: string
+                example: "Иван"
+              Surname:
+                type: string
+                example: "Иванов"
+              Patronymic:
+                type: string
+                example: "Иванович"
+              Address:
+                type: string
+                example: "г. Москва, ул. Пушкина, д. Колотушкина"
+              PassportSerie:
+                type: string
+                example: "1234"
+              PassportNumber:
+                type: string
+                example: "567890"
+              FullPassport:
+                type: string
+                example: "1234567890"
+              CreatedAt:
+                type: string
+                format: date-time
+                example: "2024-07-01T10:00:00Z"
+              UpdatedAt:
+                type: string
+                format: date-time
+                example: "2024-07-05T15:30:00Z"
+        '400':
+          description: Не удалось получить данные пользователя.
+          schema:
+            type: object
+            properties:
+              error:
+                type: string
+                example: "Не удалось получить данные пользователя: текст ошибки"
+
+  /users/list:
+    get:
+      summary: Получение списка пользователей
+      description: Получает список пользователей с возможностью фильтрации и пагинации.
+      operationId: getUsers
+      parameters:
+        - name: input
+          in: body
+          description: Параметры фильтрации и пагинации.
+          required: false
+          schema:
+            $ref: "#/definitions/UserGetListInput"
+      responses:
+        '200':
+          description: Успешное получение списка пользователей.
+          schema:
+            type: array
+            items:
+              $ref: "#/definitions/Users"
+        '400':
+          description: Не удалось получить список пользователей.
+          schema:
+            type: object
+            properties:
+              error:
+                type: string
+                example: "Не удалось получить список пользователей: текст ошибки"
+
+  /laborCost/{user_id}:
+    get:
+      summary: Получение трудозатрат пользователя
+      description: Получает трудозатраты пользователя за определённый период времени.
+      operationId: getUserLaborCost
+      parameters:
+        - name: user_id
+          in: path
+          description: ID пользователя для получения трудозатрат.
+          required: true
+          type: string
+          format: uuid
+        - name: period
+          in: body
+          description: Период времени для расчета трудозатрат.
+          required: true
+          schema:
+            $ref: "#/definitions/Period"
+      responses:
+        '200':
+          description: Успешное получение трудозатрат пользователя.
+          schema:
+            type: array
+            items:
+              $ref: "#/definitions/TaskResponse"
+        '400':
+          description: Не удалось получить трудозатраты пользователя.
+          schema:
+            type: object
+            properties:
+              error:
+                type: string
+                example: "Не удалось получить трудозатраты пользователя: текст ошибки"
+
+definitions:
+  UsersTasks:
+    type: "object"
+    properties:
+      ID:
+        type: "string"
+        format: "uuid"
+        example: "550e8400-e29b-41d4-a716-446655440000"
+      UserID:
+        type: "string"
+        format: "uuid"
+        example: "550e8400-e29b-41d4-a716-446655440001"
+      TaskID:
+        type: "string"
+        format: "uuid"
+        example: "550e8400-e29b-41d4-a716-446655440002"
+      CreatedAt:
+        type: "string"
+        format: "date-time"
+        example: "2024-07-01T10:00:00Z"
+      UpdatedAt:
+        type: "string"
+        format: "date-time"
+        example: "2024-07-05T15:30:00Z"
+      DeletedAt:
+        type: "string"
+        format: "date-time"
+        example: "2024-07-05T15:30:00Z"
+
+  Users:
+    type: "object"
+    properties:
+      ID:
+        type: "string"
+        format: "uuid"
+        example: "550e8400-e29b-41d4-a716-446655440000"
+      Name:
+        type: "string"
+        example: "Иван"
+      Surname:
+        type: "string"
+        example: "Иванов"
+      Patronymic:
+        type: "string"
+        example: "Иванович"
+      Address:
+        type: "string"
+        example: "г. Москва, ул. Пушкина, д. Колотушкина"
+      PassportSerie:
+        type: "string"
+        example: "1234"
+      PassportNumber:
+        type: "string"
+        example: "567890"
+      FullPassport:
+        type: "string"
+        example: "1234567890"
+      CreatedAt:
+        type: "string"
+        format: "date-time"
+        example: "2024-07-01T10:00:00Z"
+      UpdatedAt:
+        type: "string"
+        format: "date-time"
+        example: "2024-07-05T15:30:00Z"
+      DeletedAt:
+        type: "string"
+        format: "date-time"
+        example: "2024-07-05T15:30:00Z"
+
+  UserFilter:
+    type: "object"
+    properties:
+      Field:
+        type: "string"
+        example: "Name"
+      Value:
+        type: "string"
+        example: "Иван"
+      Operator:
+        type: "string"
+        example: "startsWith"
+
+  UserFilters:
+    type: "object"
+    properties:
+      Filters:
+        type: "array"
+        items:
+          $ref: "#/definitions/UserFilter"
+
+  UserGetListInput:
+    type: "object"
+    properties:
+      Filters:
+        $ref: "#/definitions/UserFilters"
+      Page:
+        type: "integer"
+        example: 1
+      Limit:
+        type: "integer"
+        example: 10
+
+  Tasks:
+    type: "object"
+    properties:
+      ID:
+        type: "string"
+        format: "uuid"
+        example: "550e8400-e29b-41d4-a716-446655440000"
+      Name:
+        type: "string"
+        example: "Задача 1"
+      Description:
+        type: "string"
+        example: "Описание задачи"
+      Status:
+        type: "boolean"
+        example: false
+      Hours:
+        type: "integer"
+        example: 5
+      Minutes:
+        type: "integer"
+        example: 30
+      Seconds:
+        type: "integer"
+        example: 45
+      StartTime:
+        type: "string"
+        format: "date-time"
+        example: "2024-07-01T10:00:00Z"
+      EndTime:
+        type: "string"
+        format: "date-time"
+        example: "2024-07-05T15:30:00Z"
+      CreatedAt:
+        type: "string"
+        format: "date-time"
+        example: "2024-07-01T10:00:00Z"
+      UpdatedAt:
+        type: "string"
+        format: "date-time"
+        example: "2024-07-05T15:30:00Z"
+      DeletedAt:
+        type: "string"
+        format: "date-time"
+        example: "2024-07-05T15:30:00Z"
+
+  TasksCreateInput:
+    type: "object"
+    properties:
+      UserID:
+        type: "string"
+        format: "uuid"
+        example: "550e8400-e29b-41d4-a716-446655440001"
+      Tasks:
+        $ref: "#/definitions/Tasks"
+
+  TaskResponse:
+    type: "object"
+    properties:
+      TaskID:
+        type: "string"
+        format: "uuid"
+        example: "550e8400-e29b-41d4-a716-446655440000"
+      Name:
+        type: "string"
+        example: "Задача 1"
+      Hours:
+        type: "integer"
+        example: 5
+      Minutes:
+        type: "integer"
+        example: 30
+      Seconds:
+        type: "integer"
+        example: 45
+
+  Period:
+    type: "object"
+    properties:
+      StartTime:
+        type: "string"
+        format: "date-time"
+        example: "2024-07-01T10:00:00Z"
+      EndTime:
+        type: "string"
+        format: "date-time"
+        example: "2024-07-05T15:30:00Z"

@@ -14,7 +14,722 @@ const docTemplate = `{
     },
     "host": "{{.Host}}",
     "basePath": "{{.BasePath}}",
-    "paths": {}
+    "paths": {
+    "/tasks/create/{user_id}": {
+            "post": {
+                "summary": "Создание нового задания",
+                "description": "Создает новое задание для пользователя с указанным ID.",
+                "operationId": "createTask",
+                "parameters": [
+                    {
+                        "name": "user_id",
+                        "in": "path",
+                        "description": "ID пользователя, для которого создается задание.",
+                        "required": true,
+                        "type": "string",
+                        "format": "uuid"
+                    },
+                    {
+                        "name": "body",
+                        "in": "body",
+                        "description": "Данные нового задания.",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/TasksCreateInput"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Успешное создание задания.",
+                        "schema": {
+                            "$ref": "#/definitions/Task"
+                        }
+                    },
+                    "400": {
+                        "description": "Ошибка в запросе, например, неверный формат параметров или ошибка при декодировании данных.",
+                        "schema": {
+                            "type": "object",
+                            "properties": {
+                                "error": {
+                                    "type": "string",
+                                    "example": "Не удалось декодировать тело запроса в структуру Tasks: текст ошибки"
+                                }
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Внутренняя ошибка сервера, например, ошибка при создании задания или связи между пользователем и заданием.",
+                        "schema": {
+                            "type": "object",
+                            "properties": {
+                                "error": {
+                                    "type": "string",
+                                    "example": "Не удалось создать задание: текст ошибки"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/tasks/start/{id}": {
+            "post": {
+                "summary": "Старт таймера задачи",
+                "description": "Запускает таймер для задачи с указанным ID.",
+                "operationId": "startTaskTimer",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "ID задачи для запуска таймера.",
+                        "required": true,
+                        "type": "string",
+                        "format": "uuid"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Успешный запуск таймера задачи.",
+                        "schema": {
+                            "$ref": "#/definitions/Tasks"
+                        }
+                    },
+                    "404": {
+                        "description": "Задача не найдена.",
+                        "schema": {
+                            "type": "object",
+                            "properties": {
+                                "error": {
+                                    "type": "string",
+                                    "example": "Задача не найдена"
+                                }
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Ошибка при обновлении задачи.",
+                        "schema": {
+                            "type": "object",
+                            "properties": {
+                                "error": {
+                                    "type": "string",
+                                    "example": "Ошибка при обновлении задачи: текст ошибки"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/tasks/stop/{id}": {
+            "post": {
+                "summary": "Остановка таймера задачи",
+                "description": "Останавливает таймер для задачи с указанным ID.",
+                "operationId": "stopTaskTimer",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "ID задачи для остановки таймера.",
+                        "required": true,
+                        "type": "string",
+                        "format": "uuid"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Успешная остановка таймера задачи.",
+                        "schema": {
+                            "$ref": "#/definitions/Tasks"
+                        }
+                    },
+                    "404": {
+                        "description": "Задача не найдена.",
+                        "schema": {
+                            "type": "object",
+                            "properties": {
+                                "error": {
+                                    "type": "string",
+                                    "example": "Задача не найдена"
+                                }
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Ошибка при обновлении задачи.",
+                        "schema": {
+                            "type": "object",
+                            "properties": {
+                                "error": {
+                                    "type": "string",
+                                    "example": "Ошибка при обновлении задачи: текст ошибки"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/users/create": {
+            "post": {
+                "summary": "Создание нового пользователя",
+                "description": "Создает нового пользователя с указанными данными.",
+                "operationId": "createUser",
+                "parameters": [
+                    {
+                        "in": "body",
+                        "name": "body",
+                        "description": "Данные нового пользователя.",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/Users"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Успешное создание пользователя.",
+                        "schema": {
+                            "type": "object",
+                            "properties": {
+                                "user_id": {
+                                    "type": "string",
+                                    "format": "uuid",
+                                    "example": "550e8400-e29b-41d4-a716-446655440000"
+                                },
+                                "msg": {
+                                    "type": "string",
+                                    "example": "Создание пользователя прошло успешно"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Ошибка в запросе, например, неверный формат параметров или ошибка при декодировании данных.",
+                        "schema": {
+                            "type": "object",
+                            "properties": {
+                                "error": {
+                                    "type": "string",
+                                    "example": "Не удалось создать пользователя: текст ошибки"
+                                }
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Внутренняя ошибка сервера, например, ошибка при создании пользователя.",
+                        "schema": {
+                            "type": "object",
+                            "properties": {
+                                "error": {
+                                    "type": "string",
+                                    "example": "Не удалось создать пользователя: текст ошибки"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/users/delete/{id}": {
+            "delete": {
+                "summary": "Удаление пользователя по ID",
+                "description": "Удаляет пользователя с указанным ID.",
+                "operationId": "deleteUserById",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "ID пользователя для удаления.",
+                        "required": true,
+                        "type": "string",
+                        "format": "uuid"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Успешное удаление пользователя.",
+                        "schema": {
+                            "type": "object",
+                            "properties": {
+                                "user_id": {
+                                    "type": "string",
+                                    "format": "uuid",
+                                    "example": "550e8400-e29b-41d4-a716-446655440000"
+                                },
+                                "msg": {
+                                    "type": "string",
+                                    "example": "Удаление пользователя прошло успешно"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Ошибка в запросе, например, неверный формат параметров или ошибка при удалении пользователя.",
+                        "schema": {
+                            "type": "object",
+                            "properties": {
+                                "error": {
+                                    "type": "string",
+                                    "example": "Не удалось удалить пользователя: текст ошибки"
+                                }
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Внутренняя ошибка сервера, например, ошибка при обработке запроса.",
+                        "schema": {
+                            "type": "object",
+                            "properties": {
+                                "error": {
+                                    "type": "string",
+                                    "example": "Внутренняя ошибка сервера: текст ошибки"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/users/get/{id}": {
+            "get": {
+                "summary": "Получение пользователя по ID",
+                "description": "Получает данные пользователя по указанному ID.",
+                "operationId": "getUserByID",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "ID пользователя для получения данных.",
+                        "required": true,
+                        "type": "string",
+                        "format": "uuid"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Успешное получение данных пользователя.",
+                        "schema": {
+                            "type": "object",
+                            "properties": {
+                                "ID": {
+                                    "type": "string",
+                                    "format": "uuid",
+                                    "example": "550e8400-e29b-41d4-a716-446655440000"
+                                },
+                                "Name": {
+                                    "type": "string",
+                                    "example": "John Doe"
+                                },
+                                "Email": {
+                                    "type": "string",
+                                    "example": "john.doe@example.com"
+                                },
+                                "CreatedAt": {
+                                    "type": "string",
+                                    "format": "date-time",
+                                    "example": "2023-07-01T00:00:00Z"
+                                },
+                                "UpdatedAt": {
+                                    "type": "string",
+                                    "format": "date-time",
+                                    "example": "2023-07-01T00:00:00Z"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Пользователь не найден.",
+                        "schema": {
+                            "type": "object",
+                            "properties": {
+                                "error": {
+                                    "type": "string",
+                                    "example": "Пользователь не найден"
+                                }
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Внутренняя ошибка сервера, например, ошибка при получении данных пользователя.",
+                        "schema": {
+                            "type": "object",
+                            "properties": {
+                                "error": {
+                                    "type": "string",
+                                    "example": "Ошибка при получении данных пользователя: текст ошибки"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/users/update/{id}": {
+            "put": {
+                "summary": "Обновление данных пользователя",
+                "description": "Обновляет данные пользователя по указанному ID.",
+                "operationId": "updateUserByID",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "ID пользователя для обновления данных.",
+                        "required": true,
+                        "type": "string",
+                        "format": "uuid"
+                    },
+                    {
+                        "in": "body",
+                        "name": "body",
+                        "description": "Обновленные данные пользователя.",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/Users"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Успешное обновление данных пользователя.",
+                        "schema": {
+                            "type": "object",
+                            "properties": {
+                                "user_id": {
+                                    "type": "string",
+                                    "format": "uuid",
+                                    "example": "550e8400-e29b-41d4-a716-446655440000"
+                                },
+                                "msg": {
+                                    "type": "string",
+                                    "example": "Обновление данных пользователя прошло успешно"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Ошибка в запросе, например, неверный формат параметров или ошибка при обновлении данных пользователя.",
+                        "schema": {
+                            "type": "object",
+                            "properties": {
+                                "error": {
+                                    "type": "string",
+                                    "example": "Не удалось обновить данные пользователя: текст ошибки"
+                                }
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Внутренняя ошибка сервера, например, ошибка при обработке запроса.",
+                        "schema": {
+                            "type": "object",
+                            "properties": {
+                                "error": {
+                                    "type": "string",
+                                    "example": "Внутренняя ошибка сервера: текст ошибки"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/users/laborCost/{user_id}": {
+            "post": {
+                "summary": "Получение трудозатрат пользователя",
+                "description": "Получает трудозатраты пользователя за определённый период времени.",
+                "operationId": "getUserLaborCost",
+                "parameters": [
+                    {
+                        "name": "user_id",
+                        "in": "path",
+                        "description": "ID пользователя для получения трудозатрат.",
+                        "required": true,
+                        "type": "string",
+                        "format": "uuid"
+                    },
+                    {
+                        "name": "period",
+                        "in": "body",
+                        "description": "Период времени для расчета трудозатрат.",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/Period"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Успешное получение трудозатрат пользователя.",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/TaskResponse"
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Не удалось получить трудозатраты пользователя.",
+                        "schema": {
+                            "type": "object",
+                            "properties": {
+                                "error": {
+                                    "type": "string",
+                                    "example": "Не удалось получить трудозатраты пользователя: текст ошибки"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/users/list": {
+            "post": {
+                "summary": "Получение списка пользователей",
+                "description": "Получает список пользователей с возможностью фильтрации и пагинации.",
+                "operationId": "getUsers",
+                "parameters": [
+                    {
+                        "name": "input",
+                        "in": "body",
+                        "description": "Параметры фильтрации и пагинации.",
+                        "required": false,
+                        "schema": {
+                            "$ref": "#/definitions/UserGetListInput"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Успешное получение списка пользователей.",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/Users"
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Не удалось получить список пользователей.",
+                        "schema": {
+                            "type": "object",
+                            "properties": {
+                                "error": {
+                                    "type": "string",
+                                    "example": "Не удалось получить список пользователей: текст ошибки"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    },
+    "definitions": {
+        "Users": {
+            "type": "object",
+            "properties": {
+                "name": {
+                    "type": "string",
+                    "example": "Иван"
+                },
+                "surname": {
+                    "type": "string",
+                    "example": "Иванов"
+                },
+                "patronymic": {
+                    "type": "string",
+                    "example": "Викторович"
+                },
+                "address": {
+                    "type": "string",
+                    "example": "г.Ростов-на-Дону, ул.Извилистая 25/341"
+                },
+                "passportSerie": {
+                    "type": "string",
+                    "example": "1234"
+                },
+                "passportNumber": {
+                    "type": "string",
+                    "example": "567890"
+                }
+            },
+            "required": ["name", "surname", "patronymic","address", "passportSerie", "passportNumber"]
+        },
+        "Tasks": {
+            "type": "object",
+            "properties": {
+                "id": {
+                    "type": "string",
+                    "format": "uuid",
+                    "example": "550e8400-e29b-41d4-a716-446655440000"
+                },
+                "name": {
+                    "type": "string",
+                    "example": "Задача 1"
+                },
+                "description": {
+                    "type": "string",
+                    "example": "Описание задачи 1"
+                },
+                "user_id": {
+                    "type": "string",
+                    "format": "uuid",
+                    "example": "550e8400-e29b-41d4-a716-446655440000"
+                },
+                "start_time": {
+                    "type": "string",
+                    "format": "date-time",
+                    "example": "2024-07-07T12:00:00Z"
+                },
+                "end_time": {
+                    "type": "string",
+                    "format": "date-time",
+                    "example": "2024-07-07T14:00:00Z"
+                },
+                "duration": {
+                    "type": "integer",
+                    "example": 7200
+                }
+            },
+            "required": ["title", "user_id"]
+        },
+        "TaskResponse": {
+            "type": "object",
+            "properties": {
+                "task_id": {
+                    "type": "string",
+                    "example": "f5b8cb9f-3c5c-11ef-9578-0250a55f1078"
+                },
+				"name": {
+                    "type": "string",
+                    "example": "Создать описание API"
+                },
+				"hours": {
+                    "type": "string",
+                    "example": "2"
+                },
+				"minutes": {
+                    "type": "string",
+                    "example": "1"
+                },
+				"seconds": {
+                    "type": "string",
+                    "example": "54"
+                }
+            }
+        },
+        "TasksCreateInput": {
+            "type": "object",
+            "properties": {
+                "name": {
+                    "type": "string",
+                    "example": "Новая задача"
+                },
+                "description": {
+                    "type": "string",
+                    "example": "Описание новой задачи"
+                }
+            },
+            "required": ["name"]
+        },
+        "UsersTasks": {
+            "type": "object",
+            "properties": {
+                "id": {
+                    "type": "string",
+                    "format": "uuid",
+                    "example": "550e8400-e29b-41d4-a716-446655440000"
+                },
+                "user_id": {
+                    "type": "string",
+                    "format": "uuid",
+                    "example": "550e8400-e29b-41d4-a716-446655440001"
+                },
+                "task_id": {
+                    "type": "string",
+                    "format": "uuid",
+                    "example": "550e8400-e29b-41d4-a716-446655440002"
+                },
+                "created_at": {
+                    "type": "string",
+                    "format": "date-time",
+                    "example": "2024-07-01T10:00:00Z"
+                },
+                "updated_at": {
+                    "type": "string",
+                    "format": "date-time",
+                    "example": "2024-07-05T15:30:00Z"
+                },
+                "deleted_at": {
+                    "type": "string",
+                    "format": "date-time",
+                    "example": "2024-07-05T15:30:00Z"
+                }
+            }
+        },
+        "UserFilter": {
+            "type": "object",
+            "properties": {
+                "field": {
+                    "type": "string",
+                    "example": "Name"
+                },
+                "value": {
+                    "type": "string",
+                    "example": "С"
+                },
+                "operator": {
+                    "type": "string",
+                    "example": "startsWith"
+                }
+            }
+        },
+        "UserFilters": {
+            "type": "object",
+            "properties": {
+                "filters": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/UserFilter"
+                    }
+                }
+            }
+        },
+        "UserGetListInput": {
+            "type": "object",
+            "properties": {
+				"page": {
+                    "type": "integer",
+                    "example": 1
+                },
+                "limit": {
+                    "type": "integer",
+                    "example": 3
+                },
+                "filters": {
+                    "$ref": "#/definitions/UserFilters",
+					"example": {"field": "Name", "value": "С", "operator": "startsWith"}
+                }
+            }
+        },
+        "Period": {
+            "type": "object",
+            "properties": {
+                "start_time": {
+                    "type": "string",
+                    "format": "date-time",
+                    "example": "2024-07-03T00:00:00Z"
+                },
+                "end_time": {
+                    "type": "string",
+                    "format": "date-time",
+                    "example":"2024-07-04T23:59:59Z"
+                }
+            }
+        }
+    }
 }`
 
 // SwaggerInfo holds exported Swagger Info so clients can modify it
